@@ -31,6 +31,9 @@ namespace Core.Utilities.Security.JWT
             var signingCredentials = SigningCredentialsHelper.CreateSigningCredentials(securityKey);
             var jwt = CreateJwtSecurityToken(_tokenOptions, user, signingCredentials, operationClaims);
             var jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
+            //CreateJwtSecurityToken metodu sana C# dilinde bir nesne (object) verir. Ancak frontend (Angular, React) veya Mobil uygulama bu C# nesnesinden anlamaz.
+            //Onlar "eyJhbGciOi..." diye başlayan uzun bir string metin bekler. İşte JwtSecurityTokenHandler'ı new'leyip WriteToken(jwt) dememizin tek sebebi; elimizdeki o C# nesnesini alıp,
+            //internette taşınabilecek o uzun string metne çevirmektir (Buna yazılımda Serialization / Serileştirme denir).
             var token = jwtSecurityTokenHandler.WriteToken(jwt);
 
             return new AccessToken
